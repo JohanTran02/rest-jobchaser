@@ -2,10 +2,12 @@ import express from "express";
 
 import { createUser, getUser, updateUser, deleteUser, getUsers } from "./users.controller";
 import authRoutes from "./auth.routes"
+import { auth } from "../../middleware/auth";
 
 const router = express.Router();
 
 router.use(authRoutes)
+router.use(auth);
 
 router.post("/users", createUser);
 router.get("/users", getUsers)

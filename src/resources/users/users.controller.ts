@@ -131,7 +131,7 @@ export async function deleteUser(req: Request, res: Response) {
             return res.status(404).json({ error: "User not found." })
         }
 
-        res.status(20).json({ message: "User deleted" })
+        res.status(200).json({ message: "User deleted" })
     }
     catch (error) {
         console.error("Error details:", error);
