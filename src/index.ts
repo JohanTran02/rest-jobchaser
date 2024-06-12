@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 // api routes
 app.use("/api", userRoutes);
-// app.use("/api/", postRouter);
+// app.use("/api", postRouter);
 
 
 app.listen(PORT, () => {
