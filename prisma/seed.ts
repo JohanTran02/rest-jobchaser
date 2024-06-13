@@ -1,6 +1,7 @@
 import { prisma } from "../src/db/connect"
 
 async function main() {
+    await prisma.jobs.deleteMany()
     await prisma.user.deleteMany()
 }
 
