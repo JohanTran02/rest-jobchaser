@@ -92,25 +92,27 @@ export async function createJobByUser(req: Request, res: Response) {
             where: {
                 id: parseInt(userid)
             },
-            select: {
-                jobs: true
-            }
         })
 
         if (!user) return res.status(404).json({ error: "User not found" });
 
-        const addJob = await prisma.user.update({
+        const existingJob = await prisma.jobs.findFirst({
             where: {
-                id: parseInt(userid),
+                job_id: job_id,
+                userid: parseInt(userid)
             },
+        })
+
+        if (existingJob) return res.status(404).json({ error: "Job already added" });
+
+        const job = await prisma.jobs.create({
             data: {
-                jobs: {
-                    create: [{ job_id: job_id }]
-                },
+                userid: parseInt(userid),
+                job_id: job_id
             }
         })
 
-        res.status(201).json({ id: addJob.id, message: "Job added for user" })
+        res.status(201).json({ id: job.id, message: "Job added for user" })
 
     } catch (error) {
         console.error("Error details:", error);
@@ -118,11 +120,17 @@ export async function createJobByUser(req: Request, res: Response) {
     }
 }
 
+type Query = {
+    email: string,
+    jobsid: string
+}
+
 //TODO Gör en query här för email och jobsid som i getusers
-export async function deleteJobByUser(req: Request, res: Response) {
+export async function deleteJobByUser(req: Request<{}, {}, {}, Query>, res: Response) {
     try {
-        const { jobsid } = req.params;
-        const { email } = req.body;
+
+        const jobsid = req.query.jobsid || "";
+        const email = req.query.email || "";
 
         const user = await prisma.user.findUnique({
             where: {
